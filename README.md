@@ -94,5 +94,33 @@ This prototype was created to validate the user stories and identify any missing
 </table>
 
 ### **V0 Prototype Use Cases**
+These use cases define what each user role can do within the application, with each feature mapped directly to a specific user story.
 
+The use cases are color-coded by user role:
+* 🟦 **Blue:** Actions performed by a regular user.
+* 🟩 **Green:** Actions performed by a coordinator.
+* 🟥 **Red:** Actions performed by an administrator.
 
+<table>
+  <tr>
+    <td align="center">
+      <img src="images/v0/use-cases/accounts_and_sessions.jpg" alt="Casos de uso relacionados con cuentas y sesión" width="450"/><br>
+      <sub>Accounts and sessions related use cases</sub>
+    </td>
+    <td align="center">
+      <img src="images/v0/use-cases/excursion_participant.jpg" alt="Casos de uso relacionados con participantes en la excursión" width="450"/><br>
+      <sub>Excursion participant related use cases</sub>
+    </td>
+  </tr>
+  <tr height="20px"></tr>
+  <tr>
+    <td align="center">
+      <img src="images/v0/use-cases/excursion_management_and_planning.jpg" alt="Casos de uso relacionados con gestión y planificación de la excursión" width="450"/><br>
+      <sub>Excursion management and planning related use cases</sub>
+    </td>
+    <td align="center">
+      <img src="images/v0/use-cases/supervision_and_assistance.jpg" alt="Casos de uso relacionados con supervisión y asistencia" width="450"/><br>
+      <sub>Supervision and assistance related use cases</sub>
+    </td>
+  </tr>
+</table>
