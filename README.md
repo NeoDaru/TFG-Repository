@@ -124,3 +124,9 @@ The use cases are color-coded by user role:
     </td>
   </tr>
 </table>
+
+## Database migrations
+The database schema is versioned in [`supabase/migrations/`](supabase/migrations/). Each file is a SQL script that applies one or more changes to the database (such as creating a table, adding a column or defining a security policy). Together, they form the full history of how the schema evolved. In order to replicate the schema, migrations must be executed **in ascending numerical order**.
+
+### Final schema snapshot
+Once the project is complete, a consolidated `supabase/schema.sql` will be added. It will describe the final state of the database in a single, readable script, so it can be recreated in one step without replaying the whole history.
