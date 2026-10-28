@@ -130,3 +130,11 @@ The database schema is versioned in [`supabase/migrations/`](supabase/migrations
 
 ### Final schema snapshot
 Once the project is complete, a consolidated `supabase/schema.sql` will be added. It will describe the final state of the database in a single, readable script, so it can be recreated in one step without replaying the whole history.
+
+## Configurations
+
+### Run configuration
+1. Create a file named `env.json` inside the `app` folder.
+2. Copy the contents of [`app/env.example.json`](app/env.example.json) into `app/env.json`.
+3. Fill in the `env.json` file with your Supabase project URL and public key.
+4. To run the app: `flutter run --dart-define-from-file=env.json`.
