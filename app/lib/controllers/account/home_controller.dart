@@ -1,25 +1,26 @@
 import 'package:flutter/foundation.dart';
 import '../../repositories/auth_repository.dart';
-import '../../repositories/profile_repository.dart';
+import '../session_controller.dart';
 
 class HomeController extends ChangeNotifier {
-  HomeController(this._auth, this._profiles);
-  final AuthRepository _auth;
-  final ProfileRepository _profiles;
-
-  String? name;
-  String? error;
-
-  String? get email => _auth.currentEmail;
-
-  Future<void> load() async {
-    try {
-      name = await _profiles.getName();
-    } catch (_) {
-      error = 'No se pudo cargar tu perfil';
-    }
-    notifyListeners();
+  HomeController(this._auth, this._session) {
+    _session.addListener(notifyListeners);
   }
 
+  final AuthRepository _auth;
+  final SessionController _session;
+
+  String get name => _session.name ?? '';
+  String get email => _session.email ?? '';
+  String? get error => _session.error;
+
+  Future<void> refresh() => _session.load();
+
   Future<void> signOut() => _auth.signOut();
+
+  @override
+  void dispose() {
+    _session.removeListener(notifyListeners);
+    super.dispose();
+  }
 }

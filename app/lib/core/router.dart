@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../views/account/account_page.dart';
 import '../views/account/home_page.dart';
 import '../views/auth/login_page.dart';
 import '../views/auth/register_page.dart';
@@ -36,5 +37,6 @@ final appRouter = GoRouter(
     GoRoute(path: '/login', builder: (_, __) => const LoginPage()),
     GoRoute(path: '/register', builder: (_, __) => const RegisterPage()),
     GoRoute(path: '/home', builder: (_, __) => const HomePage()),
+    GoRoute(path: '/account', builder: (_, __) => const AccountPage()),
   ],
 );

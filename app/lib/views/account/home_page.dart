@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../controllers/account/home_controller.dart';
+import '../../controllers/session_controller.dart';
 import '../../repositories/auth_repository.dart';
-import '../../repositories/profile_repository.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,12 +12,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _controller = HomeController(AuthRepository(), ProfileRepository());
+  final _controller = HomeController(AuthRepository(), sessionController);
 
   @override
   void initState() {
     super.initState();
-    _controller.load();
+    _controller.refresh();
   }
 
   @override
@@ -32,6 +33,11 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Inicio'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.person),
+            tooltip: 'Mi cuenta',
+            onPressed: () => context.push('/account'),
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Cerrar sesión',
             onPressed: _controller.signOut,
@@ -45,10 +51,10 @@ class _HomePageState extends State<HomePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Hola, ${_controller.name ?? ''}',
+                'Hola, ${_controller.name}',
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              Text(_controller.email ?? ''),
+              Text(_controller.email),
               if (_controller.error != null) Text(_controller.error!),
             ],
           ),

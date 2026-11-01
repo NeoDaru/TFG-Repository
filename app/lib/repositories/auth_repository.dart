@@ -1,3 +1,4 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../core/supabase_client.dart';
 
 class AuthRepository {
@@ -22,4 +23,39 @@ class AuthRepository {
   }
 
   String? get currentEmail => supabase.auth.currentUser?.email;
+
+  Future<void> changeEmail({
+    required String newEmail,
+    required String currentPassword,
+  }) async {
+    await supabase.functions.invoke(
+      'change-email',
+      body: {'newEmail': newEmail, 'currentPassword': currentPassword},
+    );
+    await refreshUser();
+  }
+
+  Future<void> updatePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    await supabase.auth.updateUser(
+      UserAttributes(password: newPassword, currentPassword: currentPassword),
+    );
+  }
+
+  Future<void> refreshUser() async {
+    try {
+      await supabase.auth.refreshSession();
+    } catch (_) {}
+  }
+
+  Future<String?> fetchCurrentEmail() async {
+    try {
+      final response = await supabase.auth.getUser();
+      return response.user?.email;
+    } catch (_) {
+      return supabase.auth.currentUser?.email;
+    }
+  }
 }
