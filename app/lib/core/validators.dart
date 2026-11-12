@@ -21,4 +21,11 @@ class Validators {
     if (value == null || value.isEmpty) return 'Introduce tu contraseña';
     return null;
   }
+
+  static String? excursionName(String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) return 'Introduce el nombre de la excursión';
+    if (text.length > 100) return 'Máximo 100 caracteres';
+    return null;
+  }
 }

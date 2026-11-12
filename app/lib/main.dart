@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/router.dart';
 
 Future<void> main() async {
@@ -14,7 +15,7 @@ Future<void> main() async {
     );
   }
 
-  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+  await Supabase.initialize(url: supabaseUrl, publishableKey: supabaseAnonKey);
 
   await Supabase.initialize(
     url: const String.fromEnvironment('SUPABASE_URL'),
@@ -32,6 +33,9 @@ class App extends StatelessWidget {
       title: 'Excursiones',
       theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
       routerConfig: appRouter,
+      locale: const Locale('es'),
+      supportedLocales: const [Locale('es')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
     );
   }
 }

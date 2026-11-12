@@ -5,6 +5,8 @@ import '../views/account/account_page.dart';
 import '../views/account/home_page.dart';
 import '../views/auth/login_page.dart';
 import '../views/auth/register_page.dart';
+import '../views/excursions/create_excursion_page.dart';
+import '../views/excursions/excursion_detail_page.dart';
 import 'supabase_client.dart';
 
 class _AuthNotifier extends ChangeNotifier {
@@ -34,9 +36,11 @@ final appRouter = GoRouter(
     return null;
   },
   routes: [
-    GoRoute(path: '/login', builder: (_, __) => const LoginPage()),
-    GoRoute(path: '/register', builder: (_, __) => const RegisterPage()),
-    GoRoute(path: '/home', builder: (_, __) => const HomePage()),
-    GoRoute(path: '/account', builder: (_, __) => const AccountPage()),
+    GoRoute(path: '/login', builder: (_, _) => const LoginPage()),
+    GoRoute(path: '/register', builder: (_, _) => const RegisterPage()),
+    GoRoute(path: '/home', builder: (_, _) => const HomePage()),
+    GoRoute(path: '/account', builder: (_, _) => const AccountPage()),
+    GoRoute(path: '/excursions/new', builder: (_, _) => const CreateExcursionPage()),
+    GoRoute(path: '/excursions/:id', builder: (_, state) => ExcursionDetailPage(excursionId: state.pathParameters['id']!)),
   ],
 );

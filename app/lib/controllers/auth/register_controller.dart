@@ -34,6 +34,6 @@ class RegisterController extends ChangeNotifier {
         return 'La contraseña no cumple los requisitos';
       }
     }
-    return 'No se pudo crear la cuenta. Revisa tu conexión e inténtalo de nuevo.';
+    return 'No se pudo crear la cuenta.';
   }
 }
