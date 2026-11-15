@@ -28,4 +28,11 @@ class Validators {
     if (text.length > 100) return 'Máximo 100 caracteres';
     return null;
   }
+
+  static String? accessCode(String? value) {
+    final clean = (value ?? '').replaceAll(RegExp(r'[^A-Za-z0-9]'), '');
+    if (clean.isEmpty) return 'Introduce el código de la excursión';
+    if (clean.length != 12) return 'El código tiene 12 caracteres';
+    return null;
+  }
 }

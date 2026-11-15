@@ -37,9 +37,41 @@ class _HomePageState extends State<HomePage> {
     if (created == true) _list.load();
   }
 
+  Future<void> _joinExcursion() async {
+    final excursionId = await context.push<String>('/excursions/join');
+    if (excursionId == null) return;
+    _list.load();
+    if (mounted) _openExcursion(excursionId);
+  }
+
   Future<void> _openExcursion(String id) async {
     await context.push('/excursions/$id');
     _list.load();
+  }
+
+  Future<void> _showAddMenu() async {
+    final option = await showModalBottomSheet<String>(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.add),
+              title: const Text('Crear una excursión'),
+              onTap: () => Navigator.pop(context, 'create'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.login),
+              title: const Text('Unirme con un código'),
+              onTap: () => Navigator.pop(context, 'join'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (option == 'create') await _createExcursion();
+    if (option == 'join') await _joinExcursion();
   }
 
   Widget _buildList() {
@@ -63,7 +95,7 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.all(24),
           child: Text(
             'Todavía no perteneces a ninguna excursión.\n'
-                'Crea una con el botón de abajo.',
+                'Crea una o únete con un código usando el botón de abajo.',
             textAlign: TextAlign.center,
           ),
         ),
@@ -114,9 +146,9 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _createExcursion,
+        onPressed: _showAddMenu,
         icon: const Icon(Icons.add),
-        label: const Text('Nueva excursión'),
+        label: const Text('Añadir'),
       ),
       body: Column(
         children: [

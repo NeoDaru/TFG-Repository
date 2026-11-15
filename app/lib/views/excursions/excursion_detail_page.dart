@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../controllers/excursions/excursion_detail_controller.dart';
 import '../../core/date_format.dart';
+import '../../models/excursion_role.dart';
 import '../../repositories/excursion_repository.dart';
+import 'access_code_section.dart';
 
 class ExcursionDetailPage extends StatefulWidget {
   const ExcursionDetailPage({super.key, required this.excursionId});
@@ -110,6 +112,11 @@ class _ExcursionDetailPageState extends State<ExcursionDetailPage> {
                             : excursion.description,
                       ),
                     ),
+                    if (excursion.role == ExcursionRole.coordinator)
+                      _InfoSection(
+                        title: 'Código de acceso',
+                        child: AccessCodeSection(excursionId: excursion.id),
+                      ),
                   ],
                 ),
               ),
