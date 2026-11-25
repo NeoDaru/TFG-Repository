@@ -8,6 +8,8 @@ enum ExcursionStatus {
   final String code;
   final String label;
 
+  bool get allowsEditing => this == ExcursionStatus.planned || this == ExcursionStatus.inProgress;
+
   static ExcursionStatus fromCode(String code) => values.firstWhere(
         (s) => s.code == code,
     orElse: () => ExcursionStatus.planned,

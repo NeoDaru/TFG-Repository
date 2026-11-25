@@ -61,4 +61,18 @@ class ExcursionRepository {
     final id = await supabase.rpc('join_excursion', params: {'p_code': code});
     return id as String;
   }
+
+  Future<void> update({
+    required String id,
+    required String name,
+    required String description,
+    required DateTime startAt,
+  }) async {
+    await supabase.rpc('update_excursion', params: {
+      'p_excursion_id': id,
+      'p_name': name,
+      'p_description': description,
+      'p_start_at': startAt.toUtc().toIso8601String(),
+    });
+  }
 }

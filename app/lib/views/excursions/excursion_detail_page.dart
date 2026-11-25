@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../controllers/excursions/excursion_detail_controller.dart';
 import '../../core/date_format.dart';
+import '../../models/excursion.dart';
 import '../../models/excursion_role.dart';
 import '../../repositories/excursion_repository.dart';
 import 'access_code_section.dart';
@@ -31,99 +33,124 @@ class _ExcursionDetailPageState extends State<ExcursionDetailPage> {
     super.dispose();
   }
 
+  Future<void> _edit(Excursion excursion) async {
+    final updated = await context.push<bool>(
+      '/excursions/${excursion.id}/edit',
+      extra: excursion,
+    );
+    if (updated == true) _controller.load();
+  }
+
+  Widget _buildBody(BuildContext context, Excursion? excursion) {
+    if (excursion == null) {
+      if (_controller.isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _controller.error ?? 'No se pudo cargar la excursión.',
+                textAlign: TextAlign.center,
+              ),
+              TextButton(
+                onPressed: _controller.load,
+                child: const Text('Reintentar'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: _controller.load,
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
+            children: [
+              Text(
+                excursion.name,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                children: [
+                  Chip(label: Text(excursion.status.label)),
+                  Chip(label: Text(excursion.role.label)),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _InfoSection(
+                title: 'Fecha y hora',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _InfoRow(
+                      icon: Icons.calendar_today,
+                      text: MaterialLocalizations.of(context)
+                          .formatFullDate(excursion.startAt),
+                    ),
+                    _InfoRow(
+                      icon: Icons.access_time,
+                      text: formatTime(excursion.startAt),
+                    ),
+                  ],
+                ),
+              ),
+              _InfoSection(
+                title: 'Descripción',
+                child: Text(
+                  excursion.description.isEmpty
+                      ? 'Esta excursión no tiene descripción.'
+                      : excursion.description,
+                ),
+              ),
+              if (excursion.role == ExcursionRole.coordinator)
+                _InfoSection(
+                  title: 'Código de acceso',
+                  child: AccessCodeSection(excursionId: excursion.id),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Detalle de la excursión')),
-      body: ListenableBuilder(
-        listenable: _controller,
-        builder: (context, _) {
-          final excursion = _controller.excursion;
+    return ListenableBuilder(
+      listenable: _controller,
+      builder: (context, _) {
+        final excursion = _controller.excursion;
+        final canEdit = excursion != null &&
+            excursion.role == ExcursionRole.coordinator &&
+            excursion.status.allowsEditing;
 
-          if (excursion == null) {
-            if (_controller.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _controller.error ?? 'No se pudo cargar la excursión.',
-                      textAlign: TextAlign.center,
-                    ),
-                    TextButton(
-                      onPressed: _controller.load,
-                      child: const Text('Reintentar'),
-                    ),
-                  ],
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Detalle de la excursión'),
+            actions: [
+              if (canEdit)
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  tooltip: 'Editar excursión',
+                  onPressed: () => _edit(excursion),
                 ),
-              ),
-            );
-          }
-
-          return RefreshIndicator(
-            onRefresh: _controller.load,
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 600),
-                child: ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    Text(
-                      excursion.name,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        Chip(label: Text(excursion.status.label)),
-                        Chip(label: Text(excursion.role.label)),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    _InfoSection(
-                      title: 'Fecha y hora',
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _InfoRow(
-                            icon: Icons.calendar_today,
-                            text: MaterialLocalizations.of(context)
-                                .formatFullDate(excursion.startAt),
-                          ),
-                          _InfoRow(
-                            icon: Icons.access_time,
-                            text: formatTime(excursion.startAt),
-                          ),
-                        ],
-                      ),
-                    ),
-                    _InfoSection(
-                      title: 'Descripción',
-                      child: Text(
-                        excursion.description.isEmpty
-                            ? 'Esta excursión no tiene descripción.'
-                            : excursion.description,
-                      ),
-                    ),
-                    if (excursion.role == ExcursionRole.coordinator)
-                      _InfoSection(
-                        title: 'Código de acceso',
-                        child: AccessCodeSection(excursionId: excursion.id),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+            ],
+          ),
+          body: _buildBody(context, excursion),
+        );
+      },
     );
   }
 }

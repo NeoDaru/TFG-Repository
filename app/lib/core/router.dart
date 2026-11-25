@@ -8,6 +8,8 @@ import '../views/auth/register_page.dart';
 import '../views/excursions/create_excursion_page.dart';
 import '../views/excursions/excursion_detail_page.dart';
 import '../views/excursions/join_excursion_page.dart';
+import '../models/excursion.dart';
+import '../views/excursions/edit_excursion_page.dart';
 import 'supabase_client.dart';
 
 class _AuthNotifier extends ChangeNotifier {
@@ -44,5 +46,7 @@ final appRouter = GoRouter(
     GoRoute(path: '/excursions/new', builder: (_, _) => const CreateExcursionPage()),
     GoRoute(path: '/excursions/join', builder: (_, _) => const JoinExcursionPage()),
     GoRoute(path: '/excursions/:id', builder: (_, state) => ExcursionDetailPage(excursionId: state.pathParameters['id']!)),
+    GoRoute(path: '/excursions/:id/edit', redirect: (_, state) => state.extra is Excursion ? null : '/excursions/${state.pathParameters['id']}',
+      builder: (_, state) => EditExcursionPage(excursion: state.extra as Excursion)),
   ],
 );
