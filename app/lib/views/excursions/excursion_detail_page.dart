@@ -6,6 +6,7 @@ import '../../models/excursion.dart';
 import '../../models/excursion_role.dart';
 import '../../repositories/excursion_repository.dart';
 import 'access_code_section.dart';
+import 'excursion_status_section.dart';
 
 class ExcursionDetailPage extends StatefulWidget {
   const ExcursionDetailPage({super.key, required this.excursionId});
@@ -115,6 +116,15 @@ class _ExcursionDetailPageState extends State<ExcursionDetailPage> {
                 ),
               ),
               if (excursion.role == ExcursionRole.coordinator)
+                _InfoSection(
+                  title: 'Estado de la excursión',
+                  child: ExcursionStatusSection(
+                    excursion: excursion,
+                    onChanged: _controller.load,
+                  ),
+                ),
+              if (excursion.role == ExcursionRole.coordinator &&
+                  excursion.status.isActive)
                 _InfoSection(
                   title: 'Código de acceso',
                   child: AccessCodeSection(excursionId: excursion.id),

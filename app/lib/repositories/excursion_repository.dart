@@ -1,5 +1,6 @@
 import '../core/supabase_client.dart';
 import '../models/excursion.dart';
+import '../models/excursion_status.dart';
 
 class ExcursionRepository {
   Future<String> create({
@@ -22,12 +23,11 @@ class ExcursionRepository {
         .eq('user_id', supabase.auth.currentUser!.id);
 
     final all = rows.map<Excursion>(Excursion.fromMembership).toList();
-    final now = DateTime.now();
-    final upcoming = all.where((e) => !e.startAt.isBefore(now)).toList()
+    final active = all.where((e) => e.status.isActive).toList()
       ..sort((a, b) => a.startAt.compareTo(b.startAt));
-    final past = all.where((e) => e.startAt.isBefore(now)).toList()
+    final closed = all.where((e) => !e.status.isActive).toList()
       ..sort((a, b) => b.startAt.compareTo(a.startAt));
-    return [...upcoming, ...past];
+    return [...active, ...closed];
   }
 
   Future<Excursion> getById(String id) async {
@@ -73,6 +73,13 @@ class ExcursionRepository {
       'p_name': name,
       'p_description': description,
       'p_start_at': startAt.toUtc().toIso8601String(),
+    });
+  }
+
+  Future<void> changeStatus(String excursionId, ExcursionStatus newStatus) async {
+    await supabase.rpc('change_excursion_status', params: {
+      'p_excursion_id': excursionId,
+      'p_new_status': newStatus.code,
     });
   }
 }

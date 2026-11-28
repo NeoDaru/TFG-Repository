@@ -8,7 +8,22 @@ enum ExcursionStatus {
   final String code;
   final String label;
 
-  bool get allowsEditing => this == ExcursionStatus.planned || this == ExcursionStatus.inProgress;
+  bool get isActive =>
+      this == ExcursionStatus.planned || this == ExcursionStatus.inProgress;
+
+  bool get allowsEditing => isActive;
+
+  List<ExcursionStatus> get nextStatuses {
+    switch (this) {
+      case ExcursionStatus.planned:
+        return [ExcursionStatus.inProgress, ExcursionStatus.cancelled];
+      case ExcursionStatus.inProgress:
+        return [ExcursionStatus.finished];
+      case ExcursionStatus.finished:
+      case ExcursionStatus.cancelled:
+        return [];
+    }
+  }
 
   static ExcursionStatus fromCode(String code) => values.firstWhere(
         (s) => s.code == code,

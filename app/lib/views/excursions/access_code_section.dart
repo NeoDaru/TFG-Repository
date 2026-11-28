@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../controllers/excursions/access_code_controller.dart';
 import '../../core/access_code.dart';
 import '../../repositories/excursion_repository.dart';
+import '../widgets/confirm_dialog.dart';
 
 class AccessCodeSection extends StatefulWidget {
   const AccessCodeSection({super.key, required this.excursionId});
@@ -30,27 +31,6 @@ class _AccessCodeSectionState extends State<AccessCodeSection> {
     super.dispose();
   }
 
-  Future<bool> _confirm(String title, String message) async {
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Continuar'),
-          ),
-        ],
-      ),
-    );
-    return result ?? false;
-  }
-
   Future<void> _copy(String code) async {
     await Clipboard.setData(ClipboardData(text: formatAccessCode(code)));
     if (!mounted) return;
@@ -59,9 +39,10 @@ class _AccessCodeSectionState extends State<AccessCodeSection> {
   }
 
   Future<void> _regenerate() async {
-    final ok = await _confirm(
-      'Generar un código nuevo',
-      'El código anterior dejará de funcionar. '
+    final ok = await showConfirmDialog(
+      context,
+      title: 'Generar un código nuevo',
+      message: 'El código anterior dejará de funcionar. '
           'Quienes ya se han unido seguirán en la excursión.',
     );
     if (ok) await _controller.generate();
